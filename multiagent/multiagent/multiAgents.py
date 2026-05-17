@@ -164,7 +164,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         def expectimax(state, depth, agentIndex):
-            if depth == self.depth or state.isWin() or state.isLoss():                       
+            if depth == self.depth or state.isWin() or state.isLose():                       
                 return self.evaluationFunction(state)
             actions = state.getLegalActions(agentIndex)
             if agentIndex == 0:
