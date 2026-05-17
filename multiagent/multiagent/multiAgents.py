@@ -194,7 +194,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
             if score > bestScore:
                 bestScore = score
                 bestAction = action
-            return bestAction
+        return bestAction
             
                 
         """util.raiseNotDefined()"""
