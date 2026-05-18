@@ -185,6 +185,54 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
+        def alphaBeta(state, depth, agentIndex, alpha, beta):
+            
+            if state.isWin() or state.isLose() or depth == self.depth:
+                return self.evaluationFunction(state)
+                
+            nextAgent = (agentIndex + 1) % state.getNumAgents()
+            nextDepth = depth + 1 if nextAgent == 0 else depth
+            
+            actions = state.getLegalActions(agentIndex)
+            if not actions:
+                return self.evaluationFunction(state)
+                
+            if agentIndex == 0:  
+                v = float("-inf")
+                for action in actions:
+                    v = max(v, alphaBeta(state.generateSuccessor(agentIndex, action), nextDepth, nextAgent, alpha, beta))
+                    if v > beta:  
+                        return v
+                    alpha = max(alpha, v)
+                return v
+            else:  
+                v = float("inf")
+                for action in actions:
+                    v = min(v, alphaBeta(state.generateSuccessor(agentIndex, action), nextDepth, nextAgent, alpha, beta))
+                    if v < alpha:  
+                        return v
+                    beta = min(beta, v)
+                return v
+
+        
+        alpha = float("-inf")
+        beta = float("inf")
+        bestAction = None
+        bestValue = float("-inf")
+        
+        legalActions = gameState.getLegalActions(0)
+        nextAgent = 1 % gameState.getNumAgents()
+        nextDepth = 1 if nextAgent == 0 else 0
+        
+        for action in legalActions:
+            successor = gameState.generateSuccessor(0, action)
+            value = alphaBeta(successor, nextDepth, nextAgent, alpha, beta)
+            if value > bestValue:
+                bestValue = value
+                bestAction = action
+            alpha = max(alpha, bestValue)
+            
+        return bestAction
         util.raiseNotDefined()
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
