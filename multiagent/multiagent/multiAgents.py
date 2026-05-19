@@ -75,7 +75,50 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        score = successorGameState.getScore()
+        
+        # xử lý food
+        foodList = newFood.asList()
+        
+        currentFoodCount = currentGameState.getFood().count()
+        newFoodCount = len(foodList)
+        if newFoodCount < currentFoodCount:
+            score += 100  
+        
+        if foodList:
+            minFoodDistance = min([manhattanDistance(newPos, food) for food in foodList])
+            # sử dụng reciprocal để food gần = điểm cao
+            score += 1.0 / (minFoodDistance + 1) 
+        
+        # xử lý ghost
+        ghostDistances = []
+        for i, ghostState in enumerate(newGhostStates):
+            ghostPos = ghostState.getPosition()
+            distance = manhattanDistance(newPos, ghostPos)
+            ghostDistances.append(distance)
+            
+            if newScaredTimes[i] > 0:
+                # ghost đang scared - có thể đuổi theo(chỉ đuổi khi còn đủ thời gian)
+                if newScaredTimes[i] > distance:
+                    score += 200.0 / (distance + 1)
+            else:
+                if distance <= 1:
+                    return -999999  
+                elif distance <= 3:
+                    score -= 200.0 / distance
+                elif distance <= 5:
+                    score -= 50.0 / distance
+        
+        if action == Directions.STOP:
+            score -= 50
+        
+        if ghostDistances and min(ghostDistances) > 0:
+            minGhostDistance = min(ghostDistances)
+            if minGhostDistance > 3:
+                score += 10
+        
+        return score
+        #return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
