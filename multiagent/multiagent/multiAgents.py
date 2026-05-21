@@ -351,7 +351,7 @@ def betterEvaluationFunction(currentGameState: GameState):
     for ghostState in ghostStates:
         ghostPos = ghostState.getPosition()
         ghostDist = util.manhattanDistance( pacmanPos, ghostPos)
-        if ghostState.ScaredTimer >0:
+        if ghostState.scaredTimer >0:
             score +=20.0 /(ghostDist +1)
         else:
             if ghostDist <=1:
